@@ -1,275 +1,527 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Rehuarvonta</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Osallistu rehuarvontaan</title>
 
 <style>
-:root {
-  --brand: #038c3e;
-  --primary: #0078d4;
-  --border: #dcdcdc;
+:root{
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --text:#111;
+  --muted:#555;
+  --brand:#038C3E;
+  --btn:#0078d4;
+  --border:#dcdcdc;
+  --danger:#b00020;
 }
 
-body {
-  margin: 0;
-  background: #f4f6f8;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+html,body{
+  margin:0;
+  background:var(--bg);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  color:var(--text);
 }
 
-.wrap {
-  max-width: 640px;
-  margin: 40px auto;
-  padding: 28px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+.wrap{ max-width:760px; margin:0 auto; padding:24px 18px; }
+
+.card{
+  background:var(--card);
+  border-radius:24px;
+  padding:22px 22px 26px;
+  box-shadow:0 12px 32px rgba(0,0,0,.12);
 }
 
-h1 {
-  margin-top: 0;
+h1{ font-size:30px; margin:0 0 8px; }
+.desc{
+  font-size:16px;
+  color:var(--muted);
+  margin-bottom:18px;
+  line-height:1.45;
 }
 
-label {
-  display: block;
-  margin-top: 18px;
-  font-weight: 700;
+.progress{
+  height:10px;
+  background:#e6e6e6;
+  border-radius:999px;
+  overflow:hidden;
+  margin:18px 0 22px;
+}
+.progress > div{
+  height:100%;
+  width:0%;
+  background:var(--brand);
+  transition: width .2s ease;
 }
 
-input, select, textarea {
-  width: 100%;
-  padding: 14px;
-  font-size: 18px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
+.step-title{ font-size:22px; font-weight:800; margin-bottom:16px; }
+#stepHost{ min-height:260px; }
+
+input, select, textarea{
+  width:100%;
+  padding:16px 18px;
+  font-size:20px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  box-sizing:border-box;
 }
 
-textarea {
-  min-height: 100px;
+textarea{ min-height:120px; }
+
+.hint{
+  margin-top:10px;
+  font-size:14px;
+  color:var(--danger);
+  min-height:18px;
+  white-space:pre-wrap;
 }
 
-.pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 12px;
+.pills{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+}
+.pill{
+  padding:16px 26px;
+  font-size:20px;
+  font-weight:800;
+  border-radius:999px;
+  border:2px solid var(--brand);
+  background:#fff;
+  color:var(--brand);
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.pill.active{
+  background:var(--brand);
+  color:#fff;
+}
+.pill:active{ transform: scale(0.97); }
+
+.actions{
+  display:flex;
+  gap:14px;
+  margin-top:26px;
+}
+button.nav{
+  flex:1;
+  min-height:60px;
+  font-size:20px;
+  font-weight:800;
+  border-radius:999px;
+  border:0;
+  background:var(--btn);
+  color:#fff;
+  cursor:pointer;
+  position:relative;
+}
+button.secondary{
+  background:#cfd6dd;
+  color:#111;
+}
+button.nav:disabled{
+  opacity:.7;
+  cursor:not-allowed;
 }
 
-.pill {
-  padding: 12px 22px;
-  border-radius: 999px;
-  border: 2px solid var(--brand);
-  background: #fff;
-  color: var(--brand);
-  font-weight: 800;
-  cursor: pointer;
+/* spinner kun lähetetään */
+button.nav.loading{
+  pointer-events:none;
+  opacity:.75;
+}
+button.nav.loading::after{
+  content:"";
+  width:22px;height:22px;
+  border:3px solid #ffffff80;
+  border-top-color:#ffffff;
+  border-radius:50%;
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  animation:spin .9s linear infinite;
+}
+@keyframes spin{
+  to { transform:translate(-50%,-50%) rotate(360deg); }
 }
 
-.pill.active {
-  background: var(--brand);
-  color: #fff;
-}
-
-button.submit {
-  margin-top: 28px;
-  width: 100%;
-  padding: 16px;
-  font-size: 20px;
-  font-weight: 900;
-  border-radius: 999px;
-  border: 0;
-  background: var(--primary);
-  color: #fff;
-  position: relative;
-}
-
-button.submit.loading {
-  pointer-events: none;
-  opacity: 0.75;
-}
-
-button.submit.loading::after {
-  content: "";
-  width: 22px;
-  height: 22px;
-  border: 3px solid #ffffff80;
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.hint {
-  margin-top: 14px;
-  color: #b00020;
-  font-weight: 600;
+.helper{
+  margin-top:10px;
+  font-size:14px;
+  color:var(--muted);
 }
 </style>
 </head>
 
 <body>
 <div class="wrap">
-  <h1>Osallistu rehuarvontaan</h1>
+  <div class="card">
 
-  <label>Nimi *</label>
-  <input id="name" />
+    <h1>Osallistu rehuarvontaan</h1>
+    <div class="desc">
+      Täytä yhteystiedot ja kerro lyhyesti tilastasi – osallistut samalla arvontaan.
+    </div>
 
-  <label>Puhelin *</label>
-  <input id="phone" inputmode="tel" />
+    <div class="progress"><div id="bar"></div></div>
+    <div id="stepHost"></div>
 
-  <label>Tuotantosuunta *</label>
-  <select id="production">
-    <option value="">— valitse —</option>
-    <option>Lypsykarjatila</option>
-    <option>Lihakarjatila</option>
-    <option>Emolehmätila</option>
-    <option>Muu</option>
-  </select>
+    <div class="actions">
+      <button id="backBtn" class="nav secondary" type="button">Takaisin</button>
+      <button id="nextBtn" class="nav" type="button">Seuraava</button>
+    </div>
 
-  <label id="animalLabel">Eläinmäärä *</label>
-  <input id="animalCount" type="number" />
+    <div id="hint" class="hint"></div>
 
-  <label>Kiinnostunut *</label>
-  <div class="pills" id="interestPills"></div>
-
-  <label>Lisätiedot</label>
-  <textarea id="notes"></textarea>
-
-  <button class="submit" id="submitBtn" type="button">
-    Lähetä
-  </button>
-
-  <div class="hint" id="hint"></div>
+  </div>
 </div>
 
 <script>
-/* ================== ASETUKSET ================== */
+const POWER_AUTOMATE_URL = "https://defaultd454dc7d3d94429488602365011a91.37.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/bb280f859478467b9baa9e59cd87dbb1/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=1hDaYD8pEqbzQe5t8cMC5a_6qCMt10QTFG-d-PPnHE8";
 
-const POWER_AUTOMATE_URL =
-  "PASTE_YOUR_POWER_AUTOMATE_URL_HERE";
+/* ✅ Lisää “Minulla ei ole karjaa” tuotantosuuntiin */
+const STEPS = [
+  { key:"farmName", type:"text", title:"Yrityksen / tilan nimi", required:false },
+  { key:"name", type:"text", title:"Etu- ja sukunimi", required:true },
 
-const API_KEY = "rehuarvonta-2026";
+  /* pieni parannus: puhelin inputmode tel + siivous */
+  { key:"phone", type:"phone", title:"Puhelinnumero", required:true },
 
-/* ================== STATE ================== */
+  { key:"email", type:"email", title:"Sähköposti (valinnainen)", required:false },
 
-let isSubmitting = false;
-let selectedInterests = [];
+  /* postinumero: 5 numeroa */
+  { key:"postalCode", type:"postal", title:"Postinumero", required:true },
 
-/* ================== INTEREST PILLS ================== */
+  { key:"city", type:"text", title:"Postitoimipaikka", required:true },
 
-const interests = [
-  "Ruokintasuunnitelma",
-  "Tilakäynti",
-  "Rehutarjous",
-  "Muu"
+  { key:"production", type:"select", title:"Tuotantosuunta", required:true,
+    options:["Lypsykarjatila","Lihakarjatila","Emolehmätila","Muu","Minulla ei ole karjaa"]
+  },
+
+  /* eläinmäärä ohitetaan automaattisesti jos “ei karjaa” */
+  { key:"animalCount", type:"animals", title:"Eläinmäärä", required:true },
+
+  { key:"interest", type:"multi", title:"Kiinnostunut", required:true,
+    options:["Ruokintasuunnitelma","Tilakäynti","Rehutarjous","Muu"]
+  },
+
+  { key:"notes", type:"textarea", title:"Lisätiedot (valinnainen)", required:false }
 ];
 
-const pillsHost = document.getElementById("interestPills");
+let idx = 0;
+let state = { interest: [] };
 
-interests.forEach(text => {
-  const b = document.createElement("button");
-  b.type = "button";
-  b.className = "pill";
-  b.textContent = text;
-  b.onclick = () => {
-    b.classList.toggle("active");
-    if (selectedInterests.includes(text)) {
-      selectedInterests = selectedInterests.filter(x => x !== text);
-    } else {
-      selectedInterests.push(text);
-    }
-  };
-  pillsHost.appendChild(b);
-});
+let submitting = false;
 
-/* ================== ELÄINLABEL ================== */
+const host = document.getElementById("stepHost");
+const backBtn = document.getElementById("backBtn");
+const nextBtn = document.getElementById("nextBtn");
+const bar = document.getElementById("bar");
+const hint = document.getElementById("hint");
 
-const animalLabel = document.getElementById("animalLabel");
+function setSubmitting(on){
+  submitting = on;
+  backBtn.disabled = on;
+  nextBtn.disabled = on;
+  nextBtn.classList.toggle("loading", on);
+  if(on && idx === STEPS.length - 1){
+    nextBtn.textContent = "Lähetetään…";
+  }
+}
 
-document.getElementById("production").addEventListener("change", e => {
-  const map = {
-    "Lypsykarjatila": "Lypsävien määrä",
-    "Lihakarjatila": "Lihakarjan määrä",
-    "Emolehmätila": "Emolehmien määrä",
-    "Muu": "Eläinten määrä"
-  };
-  animalLabel.textContent = (map[e.target.value] || "Eläinmäärä") + " *";
-});
-
-/* ================== SUBMIT ================== */
-
-document.getElementById("submitBtn").addEventListener("click", submitForm);
-
-async function submitForm() {
-  if (isSubmitting) return;
-
-  const hint = document.getElementById("hint");
+function render(){
+  const step = STEPS[idx];
+  bar.style.width = Math.round((idx+1)/STEPS.length*100) + "%";
+  backBtn.style.display = idx===0 ? "none" : "block";
+  nextBtn.textContent = idx===STEPS.length-1 ? (submitting ? "Lähetetään…" : "Lähetä") : "Seuraava";
   hint.textContent = "";
+  host.innerHTML = "";
 
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const production = document.getElementById("production").value;
-  const count = document.getElementById("animalCount").value;
-  const notes = document.getElementById("notes").value;
+  const title = document.createElement("div");
+  title.className = "step-title";
+  title.textContent = step.title;
+  host.appendChild(title);
 
-  if (!name || !phone || !production || !count || selectedInterests.length === 0) {
-    hint.textContent = "Täytä kaikki pakolliset kentät.";
+  /* ✅ Eläinmäärä-step: jos ei karjaa, ohitetaan ja näytetään info */
+  if(step.type==="animals"){
+    if(state.production === "Minulla ei ole karjaa"){
+      state.noLivestock = true;
+      // siivotaan mahdolliset vanhat eläinmäärät
+      delete state.countDairy;
+      delete state.countBeef;
+      delete state.countCows;
+      delete state.countOther;
+
+      const info = document.createElement("div");
+      info.className = "helper";
+      info.textContent = "Valitsit “Minulla ei ole karjaa” – eläinmäärää ei tarvitse antaa.";
+      host.appendChild(info);
+      return;
+    } else {
+      delete state.noLivestock;
+    }
+
+    const labelMap = {
+      "Lypsykarjatila": "Lypsävien määrä",
+      "Lihakarjatila": "Lihakarjan määrä",
+      "Emolehmätila": "Emolehmien määrä",
+      "Muu": "Eläinten määrä"
+    };
+
+    const keyMap = {
+      "Lypsykarjatila": "countDairy",
+      "Lihakarjatila": "countBeef",
+      "Emolehmätila": "countCows",
+      "Muu": "countOther"
+    };
+
+    const prod = state.production;
+    const fieldKey = keyMap[prod];
+
+    const input = document.createElement("input");
+    input.type = "number";
+    input.inputMode = "numeric";
+    input.min = "1";
+    input.step = "1";
+    input.placeholder = labelMap[prod] || "Eläinmäärä";
+    input.value = state[fieldKey] || "";
+    input.oninput = () => {
+      const v = String(input.value || "").replace(/[^\d]/g,"");
+      input.value = v;
+      state[fieldKey] = v;
+    };
+
+    host.appendChild(input);
     return;
   }
 
-  isSubmitting = true;
-  const btn = document.getElementById("submitBtn");
-  btn.classList.add("loading");
-  btn.textContent = "Lähetetään…";
+  /* phone */
+  if(step.type==="phone"){
+    const el = document.createElement("input");
+    el.type = "tel";
+    el.inputMode = "tel";
+    el.placeholder = "esim. 0401234567 tai +358401234567";
+    el.value = state.phone || "";
+    el.oninput = () => {
+      const cleaned = String(el.value||"").replace(/[^\d+]/g,"");
+      el.value = cleaned;
+      state.phone = cleaned;
+    };
+    host.appendChild(el);
+
+    const help = document.createElement("div");
+    help.className = "helper";
+    help.textContent = "Hyväksytään muodot 0… tai +358… (vain numerot ja +).";
+    host.appendChild(help);
+    return;
+  }
+
+  /* postal */
+  if(step.type==="postal"){
+    const el = document.createElement("input");
+    el.type = "text";
+    el.inputMode = "numeric";
+    el.placeholder = "esim. 90100";
+    el.value = state.postalCode || "";
+    el.oninput = () => {
+      const v = String(el.value||"").replace(/\D/g,"").slice(0,5);
+      el.value = v;
+      state.postalCode = v;
+    };
+    host.appendChild(el);
+
+    const help = document.createElement("div");
+    help.className = "helper";
+    help.textContent = "Postinumero = 5 numeroa.";
+    host.appendChild(help);
+    return;
+  }
+
+  let el;
+  if(step.type==="text" || step.type==="email"){
+    el = document.createElement("input");
+    el.type = step.type;
+    el.value = state[step.key] || "";
+    el.oninput = () => state[step.key] = el.value;
+    host.appendChild(el);
+  }
+
+  if(step.type==="select"){
+    el = document.createElement("select");
+    el.innerHTML = '<option value="">— valitse —</option>' +
+      step.options.map(o=>`<option value="${o}">${o}</option>`).join("");
+    el.value = state[step.key] || "";
+    el.onchange = ()=>{
+      state[step.key] = el.value;
+
+      // tuotantosuunta vaihtui → nollaa eläinmäärät
+      delete state.countDairy;
+      delete state.countBeef;
+      delete state.countCows;
+      delete state.countOther;
+
+      if(el.value === "Minulla ei ole karjaa"){
+        state.noLivestock = true;
+      } else {
+        delete state.noLivestock;
+      }
+    };
+    host.appendChild(el);
+  }
+
+  if(step.type==="multi"){
+    el = document.createElement("div");
+    el.className = "pills";
+    step.options.forEach(v=>{
+      const b = document.createElement("button");
+      b.type="button";
+      b.className="pill"+(state.interest.includes(v)?" active":"");
+      b.textContent=v;
+      b.onclick=()=>{
+        state.interest = state.interest.includes(v)
+          ? state.interest.filter(x=>x!==v)
+          : [...state.interest, v];
+        render();
+      };
+      el.appendChild(b);
+    });
+    host.appendChild(el);
+  }
+
+  if(step.type==="textarea"){
+    el = document.createElement("textarea");
+    el.value = state[step.key] || "";
+    el.oninput = ()=> state[step.key] = el.value;
+    host.appendChild(el);
+  }
+}
+
+function validate(){
+  const step = STEPS[idx];
+
+  // animals: jos ei karjaa → ok
+  if(step.type==="animals"){
+    if(state.production === "Minulla ei ole karjaa"){
+      return true;
+    }
+    const values = ["countDairy","countBeef","countCows","countOther"];
+    const filled = values.some(k => state[k] && Number(state[k]) > 0);
+    if(!filled){
+      hint.textContent = "Syötä eläinmäärä (vähintään 1).";
+      return false;
+    }
+    return true;
+  }
+
+  // phone: FI
+  if(step.type === "phone"){
+    const phone = String(state.phone || "").trim();
+    const re = /^(\+358|0)\d{7,10}$/;
+    if(!re.test(phone)){
+      hint.textContent = "Puhelinnumero ei ole suomalaisessa muodossa (0… tai +358…).";
+      return false;
+    }
+    return true;
+  }
+
+  // postal: 5 digits
+  if(step.type === "postal"){
+    const pc = String(state.postalCode || "").trim();
+    if(!/^\d{5}$/.test(pc)){
+      hint.textContent = "Postinumeron tulee olla 5 numeroa.";
+      return false;
+    }
+    return true;
+  }
+
+  // interest: min 1
+  if(step.key === "interest"){
+    if(!Array.isArray(state.interest) || state.interest.length === 0){
+      hint.textContent = "Valitse vähintään yksi kiinnostuksen kohde.";
+      return false;
+    }
+    return true;
+  }
+
+  // required
+  if(step.required){
+    const v = state[step.key];
+    if(!v || (Array.isArray(v) && v.length===0)){
+      hint.textContent = "Täytä tämä kenttä.";
+      return false;
+    }
+  }
+
+  // email optional check
+  if(step.type === "email"){
+    const email = String(state.email || "").trim();
+    if(email && !email.includes("@")){
+      hint.textContent = "Tarkista sähköposti.";
+      return false;
+    }
+  }
+
+  return true;
+}
+
+async function finish(){
+  // estä tuplalähetys
+  if(submitting) return;
+  setSubmitting(true);
 
   const payload = {
-    campaign: "Rehuarvonta",
-    submittedAt: new Date().toISOString(),
-    name,
-    phone,
-    production,
-    interests: selectedInterests,
-    notes
+    campaign:"Rehuarvonta",
+    submittedAt:new Date().toISOString(),
+    ...state
   };
 
-  payload[
-    production === "Lypsykarjatila" ? "countDairy" :
-    production === "Lihakarjatila" ? "countBeef" :
-    production === "Emolehmätila" ? "countCows" :
-    "countOther"
-  ] = count;
+  // varmistetaan interest aina array
+  if(!Array.isArray(payload.interest)) payload.interest = [];
 
-  try {
-    const res = await fetch(POWER_AUTOMATE_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-KEY": API_KEY
-      },
+  try{
+    const res = await fetch(POWER_AUTOMATE_URL,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
       body: JSON.stringify(payload)
     });
 
-    if (!res.ok) throw new Error("HTTP " + res.status);
+    // ✅ TÄRKEÄ: tarkista status ja näytä oikea virhe
+    if(!res.ok){
+      const txt = await res.text().catch(()=> "");
+      throw new Error(`HTTP ${res.status}\n${txt}`);
+    }
 
-    document.querySelector(".wrap").innerHTML =
-      "<h1>Kiitos! ✅</h1><p>Osallistumisesi on vastaanotettu.</p>";
-
-  } catch (err) {
-    console.error(err);
-    isSubmitting = false;
-    btn.classList.remove("loading");
-    btn.textContent = "Lähetä";
-    hint.textContent = "Lähetys epäonnistui. Yritä uudelleen.";
+    document.body.innerHTML = `
+      <div style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center">
+        <div>
+          <div style="font-size:36px;font-weight:900;color:#038C3E">Kiitos! ✅</div>
+          <p>Osallistumisesi on tallennettu.</p>
+        </div>
+      </div>`;
+  }catch(e){
+    setSubmitting(false);
+    // näytä tarkempi virhe (mutta ei liian pitkä)
+    const msg = String(e && e.message ? e.message : e);
+    hint.textContent = "Tallennus epäonnistui. Yritä uudelleen.\n\n" + msg.slice(0, 500);
+    render();
   }
 }
+
+backBtn.onclick = ()=>{ if(submitting) return; idx--; render(); };
+nextBtn.onclick = async ()=>{
+  if(submitting) return;
+  if(!validate()) return;
+
+  if(idx===STEPS.length-1){
+    await finish();
+  }else{
+    idx++;
+    render();
+  }
+};
+
+render();
 </script>
 </body>
 </html>
