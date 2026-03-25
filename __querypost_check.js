@@ -7,6 +7,7 @@ const AFTER_SUBMIT_URL = "https://kinnusentahtirehut.fi/";
 */
 let POSTAL_MAP = {};
 let POSTAL_READY = false;
+const POSTAL_JSON_URL = new URL("postinumerot.json", location.href).toString();
 
 function fixFinnishMojibake(s){
   const t = String(s ?? "");
@@ -25,7 +26,7 @@ if(location.protocol === "file:" && window.POSTAL_DATA && typeof window.POSTAL_D
   POSTAL_MAP = window.POSTAL_DATA;
   POSTAL_READY = true;
 }else{
-  fetch("postinumerot.json", { cache:"no-store" })
+  fetch(POSTAL_JSON_URL, { cache:"no-store" })
     .then(async r => {
       if(!r.ok) throw new Error("HTTP " + r.status);
       const t = await r.text();
@@ -37,7 +38,12 @@ if(location.protocol === "file:" && window.POSTAL_DATA && typeof window.POSTAL_D
       POSTAL_READY = true;
     })
     .catch(e => {
-      console.error("Postinumerot eivät latautuneet", e);
+      console.error("Postinumerot eivät latautuneet JSON:sta, käytetään fallbackia jos saatavilla.", e);
+      if(window.POSTAL_DATA && typeof window.POSTAL_DATA === "object"){
+        POSTAL_MAP = window.POSTAL_DATA;
+        POSTAL_READY = true;
+        return;
+      }
       POSTAL_MAP = {};
       POSTAL_READY = false;
     });
