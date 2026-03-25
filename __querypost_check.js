@@ -99,6 +99,25 @@ const modeQuickBtn = document.getElementById("modeQuick");
 const modeFullBtn = document.getElementById("modeFull");
 const modeRow = document.getElementById("modeRow");
 
+function countAnimalsTitleForProduction(production){
+  switch(String(production || "").trim()){
+    case "Lypsykarjatila":
+      return "Lypsävien määrä";
+    case "Lihakarjatila":
+      return "Lihanautojen määrä";
+    case "Emolehmätila":
+      return "Emojen määrä";
+    case "Vasikka / Välikasvattamo":
+      return "Vasikoiden määrä";
+    case "Lammastila":
+      return "Lampaiden määrä";
+    case "Porotila":
+      return "Porojen määrä";
+    default:
+      return "Eläinmäärä";
+  }
+}
+
 function updateModeUI(){
   const quick = state.mode !== "Tarkempi";
   modeQuickBtn.classList.toggle("active", quick);
@@ -267,6 +286,9 @@ function render(){
   if(idx > steps.length-1) idx = steps.length-1;
 
   const step = steps[idx];
+  const stepTitle = (step.key === "countAnimals")
+    ? countAnimalsTitleForProduction(state.production)
+    : step.title;
 
   bar.style.width = Math.round((idx+1)/steps.length*100) + "%";
   backBtn.style.display = idx===0 ? "none" : "block";
@@ -276,7 +298,7 @@ function render(){
 
   const t = document.createElement("div");
   t.className = "step-title";
-  t.textContent = step.title;
+  t.textContent = stepTitle;
   host.appendChild(t);
 
   let el;
